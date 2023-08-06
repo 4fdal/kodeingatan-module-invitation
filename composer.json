@@ -1,0 +1,46 @@
+{
+  "name": "kodeingatan/invitation",
+  "description": "kodeingatan invitation ",
+  "license": "MIT",
+  "type": "library",
+  "keywords": [
+    "admin"
+  ],
+  "autoload": {
+    "psr-4": {
+      "Kodeingatan\\Invitation\\": "src/"
+    }
+  },
+  "homepage": "https://kodeingatan.com",
+  "authors": [
+    {
+      "name": "Afdal",
+      "email": "afdal.develop@gmail.com",
+      "homepage": "https://kodeingatan.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^7.3|^8.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "5.*|6.*|^7.0",
+    "phpunit/phpunit": "^9.1"
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit --colors=always"
+  },
+  "suggest": {
+    "kodeingatan/invitation": "Kodeingatan invitation"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Kodeingatan\\AdminPanel\\Provider\\AdminPanelServiceProvider"
+      ],
+      "aliases": {
+        "KIAdminPanel": "Kodeingatan\\AdminPanel\\Facades\\AdminPanel"
+      }
+    }
+  }
+}
