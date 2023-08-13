@@ -36,10 +36,10 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Kodeingatan\\AdminPanel\\Provider\\AdminPanelServiceProvider"
+        "Kodeingatan\\Invitation\\Provider\\InvitationServiceProvider"
       ],
       "aliases": {
-        "KIAdminPanel": "Kodeingatan\\AdminPanel\\Facades\\AdminPanel"
+        "KIInvitation": "Kodeingatan\\Invitation\\Facades\\Invitation"
       }
     }
   }
