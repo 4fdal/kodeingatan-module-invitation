@@ -2,9 +2,8 @@
 
 namespace Kodeingatan\Invitation\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\BaseCRUDController;
-use Inertia\Inertia;
+use Illuminate\Http\Request;
 use Kodeingatan\Invitation\Models\InvitationTemplate;
 
 class InvitationTemplateController extends BaseCRUDController
@@ -29,23 +28,30 @@ class InvitationTemplateController extends BaseCRUDController
         $request->validate([]);
     }
 
+    protected function editModelRelation($model)
+    {
+        return $model;
+    }
+
     protected function getDataStore(Request $request): array
     {
-        $data = $request->only(['name', 'guard_name', 'allow_pathname']);
-        if ($request->allow_methods) $data['allow_methods'] = json_encode($request->allow_methods);
+        $data = $request->only(['slug', 'name']);
+        $data['key'] = \Str::uuid();
 
         return $data;
     }
 
     protected function handleUpdateValidate(Request $request, $model): void
     {
-        $request->validate([]);
+        $request->validate([
+            'slug' => ['required'],
+            'name' => ['required'],
+        ]);
     }
 
     protected function getDataUpdate(Request $request, $model): array
     {
-        $data = $request->only(['name', 'guard_name', 'allow_pathname']);
-        if ($request->allow_methods) $data['allow_methods'] = json_encode($request->allow_methods);
+        $data = $request->only(['slug', 'name']);
 
         return $data;
     }

@@ -9,7 +9,7 @@ class InvitationTemplate extends Model
 {
     use SoftDeletes;
 
-    protected $fillable  = ["id", "name", 'key', 'guard_name', 'allow_pathname', 'allow_methods'];
+    protected $fillable  = ["id", "key", "slug", "name"];
 
     protected $dates = ['deleted_at'];
 }
