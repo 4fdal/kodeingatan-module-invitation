@@ -8,6 +8,7 @@ use Kodeingatan\Invitation\Models\InvitationTemplate;
 
 class InvitationTemplateController extends BaseCRUDController
 {
+
     protected function getBaseModelClassName(): string
     {
         return InvitationTemplate::class;

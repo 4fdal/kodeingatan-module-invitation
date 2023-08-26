@@ -96,7 +96,7 @@ class TemplateSettingController extends Controller
                                 'message' => 'Terjadi kesalahan penginputan data',
                                 'data' => null,
                                 'errors' => $validator->errors()
-                            ], 433);
+                            ], 422);
                         }
 
                         $name = $request->name;
@@ -113,7 +113,7 @@ class TemplateSettingController extends Controller
                         $file_zip_name = $file_zip['name'];
                         $file_zip_base64 = $file_zip['base64'];
 
-                        $dir_file_path = "admin/invitation/template";
+                        $dir_file_path = "app/admin/invitation/template";
                         $file_zip = base64_store_file($file_zip_base64, $file_zip_name, $dir_file_path);
 
                         $file_zip_path = storage_path($file_zip['file_path']);
@@ -126,17 +126,19 @@ class TemplateSettingController extends Controller
                             $zip->close();
                             if (file_exists($file_zip_path)) unlink($file_zip_path);
 
-                            if ($old_dir_path) deleteDirectory(storage_path($old_dir_path));
+                            if ($old_dir_path) delete_directory(storage_path($old_dir_path));
                         }
 
 
+                        $id = null;
                         if (isset($asset_html)) {
+                            $id = $asset_html->id;
                             $asset_html_builder->update([
                                 'dir_path' => $dir_path,
                                 'updated_at' => date('Y-m-d H:i:s'),
                             ]);
                         } else {
-                            $asset_html = $setting_builder->insert([
+                            $id  = $setting_builder->insertGetId([
                                 'invitation_template_id' => $invitation_template->id,
                                 'name' => $name,
                                 'dir_path' => $dir_path,
@@ -148,6 +150,7 @@ class TemplateSettingController extends Controller
                         return response()->json([
                             'message' => 'Berhasil, memperbarui data',
                             'data' => [
+                                'id' => $id,
                                 'old_dir_path' => $old_dir_path,
                                 'name' => $name,
                                 'dir_path' => $dir_path,

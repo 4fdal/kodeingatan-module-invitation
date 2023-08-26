@@ -8,9 +8,9 @@ import BrowseAssetFile from './BrowseAssetFile';
 
 const defaultContextState = {
     _token: null,
-    listAssetFile: {
-        loading: false,
-        data: null,
+    assetHtml: {
+        dir_path: null,
+        name: null,
     },
     invitationTemplate: {},
     set: (state) => { }
@@ -20,15 +20,14 @@ export const AssetFileContext = React.createContext(defaultContextState);
 
 function AssetFile({ invitationTemplate, _token }) {
 
-
     const [assetContextState, setAssetContextState] = useState(defaultContextState)
 
-    return <AssetFileContext.Provider value={{ ...assetContextState, invitationTemplate, _token, set: setAssetContextState }}>
-        <Row gutter={4} >
+    return <AssetFileContext.Provider value={{ ...assetContextState, invitationTemplate, _token, set: (state) => setAssetContextState({ ...assetContextState, ...state }) }}>
+        <Row gutter={10} >
             <Col md={12}>
                 <CreateEditAssetFile />
             </Col>
-            <Col md={12}>
+            <Col md={12} >
                 <ListAssetFile />
             </Col>
             <Col md={24}>
