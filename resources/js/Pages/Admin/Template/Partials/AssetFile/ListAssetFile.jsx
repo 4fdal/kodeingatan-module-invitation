@@ -1,66 +1,66 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { AssetFileContext } from './AssetFile';
-import { Card, List, notification } from 'antd';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Button, Card, Col, Divider, List, Row, notification } from 'antd';
 import { Link } from '@inertiajs/react';
 import { getFileScandir } from '@/Requests/File';
-
+import { FileOutlined } from '@ant-design/icons';
+import { getShowFileUrl } from '@kodeingatan/Utils/url';
+import { AssetFileContext } from './AssetFile';
 
 function ItemFile({ file }) {
-    return <List.Item>
-        <Link href={route('admin.file.show', {
-            base64: btoa(JSON.stringify({
-                mime_type: 'application/text',
-                file_path: file,
-            })),
+  const handleClick = () => {
+    const urlFile = getShowFileUrl({
+      file_path: file.path,
+      mime_type: 'application/text',
+    });
+    window.open(urlFile, '_blank');
+  };
 
-        })} >
-            {file}
-        </Link>
-    </List.Item>
+  return (
+    <Button
+      icon={<FileOutlined />}
+      onClick={handleClick}
+      type="dashed"
+      style={{ margin: 5 }}
+    >
+      {file.name}
+    </Button>
+  );
 }
 
-function ListAssetFile(props) {
+function ListAssetFile() {
+  const [assetPathFiles, setAssetPathFiles] = React.useState([]);
 
-    const [loading, setLoading] = React.useState(false)
-    const [files, setFiles] = React.useState([])
+  const { defaultSelectAssetFile, setAssetFileState } =
+    React.useContext(AssetFileContext);
 
-    const {
-        assetHtml,
-        set: setAssetFileContext
-    } = React.useContext(AssetFileContext)
-
-    React.useEffect(() => {
-
-        setLoading(true)
-        if (assetHtml.dir_path) {
-            getFileScandir(assetHtml.dir_path, true).then(res => {
-
-            })
-        } else {
-            {/* setAssetFileContext({
-                assetHtml : {
-                    dir_path : 
-                }
-            }) */}
-
-
+  React.useEffect(() => {
+    if (defaultSelectAssetFile.dir_path) {
+      getFileScandir(defaultSelectAssetFile.dir_path, true).then(
+        ({ data: { data: assetPathFiles } }) => {
+          setAssetPathFiles(assetPathFiles);
         }
-    }, [assetHtml]);
+      );
+    }
+  }, [defaultSelectAssetFile]);
 
-    return <Card title="Asset Files" >
-        {files.map((file, index) => <ItemFile file={file} key={index} />)}
-    </Card>
-
-
+  return (
+    <div style={{ overflowY: 'scroll', height: 350 }}>
+      <Row>
+        {assetPathFiles.map((file, index) => (
+          <ItemFile file={file} key={index} />
+        ))}
+      </Row>
+    </div>
+  );
 }
 
 ListAssetFile.propTypes = {
-    initialValues: PropTypes.object,
+  initialValues: PropTypes.object,
 };
 
 ListAssetFile.defaultProps = {
-    initialValues: {},
+  initialValues: {},
 };
 
 export default ListAssetFile;

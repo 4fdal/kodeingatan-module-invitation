@@ -11,6 +11,7 @@ Route::middleware('web', 'auth', 'permission:admin')->prefix('/admin')->as('admi
         Route::prefix('/template/settings/{invitation_template_key}/{table}')->as('template.setting.')->group(function () {
             Route::get('/', [TemplateSettingController::class, 'index'])->name('index');
             Route::post('/', [TemplateSettingController::class, 'store'])->name('store');
+            Route::delete('/', [TemplateSettingController::class, 'delete'])->name('delete');
         });
     });
 });
