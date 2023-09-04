@@ -5,7 +5,7 @@ import { Link } from '@inertiajs/react';
 import { getFileScandir } from '@/Requests/File';
 import { FileOutlined } from '@ant-design/icons';
 import { getShowFileUrl } from '@kodeingatan/Utils/url';
-import { AssetFileContext } from './AssetFile';
+import { AssetFileContext } from './Index';
 
 function ItemFile({ file }) {
   const handleClick = () => {

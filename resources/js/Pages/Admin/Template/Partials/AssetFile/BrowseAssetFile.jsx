@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Card, Checkbox, Modal, Row, notification } from 'antd';
-import { AssetFileContext } from './AssetFile';
+import { AssetFileContext } from './Index';
 import {
   browseInvitationTemplateSetting,
   deleteInvitationTemplateSetting,
@@ -10,6 +10,8 @@ import KiDataTable from '@kodeingatan/Components/Table/KiDataTable';
 import { v4 } from 'uuid';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { red } from '@ant-design/colors';
+import { Link } from '@inertiajs/react';
+import { getFileUrl } from '@kodeingatan/Utils/url';
 
 function BrowseAssetFile(props) {
   const {
@@ -102,6 +104,26 @@ function BrowseAssetFile(props) {
           key: 'name',
           dataIndex: 'name',
           title: 'Nama',
+        },
+        {
+          key: 'dir_path',
+          dataIndex: 'dir_path',
+          title: 'Asset Url',
+          render: (dir_path, row) => {
+            getFileUrl;
+
+            return (
+              <Link
+                onClick={e => {
+                  e.preventDefault();
+                  console.log(e.target.href);
+                }}
+                target="_blank"
+              >
+                {dir_path}
+              </Link>
+            );
+          },
         },
         {
           width: '10%',

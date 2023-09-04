@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('open_invitation_html', function (Blueprint $table) {
+        Schema::create('wrap_html', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('invitation_template_id')->unsigned();
             $table->string('name');
-            $table->text('html');
-            $table->text('input_config')->nullable();
-            $table->foreign('invitation_template_id', 'open_invitation_html_itid')->references('id')->on('invitation_templates')->onDelete('cascade');
+            $table->text('upperbody_html');
+            $table->text('lowerbody_html');
+            $table->foreign('invitation_template_id', 'wrap_html_itid')->references('id')->on('invitation_templates')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('open_invitation_html');
+        Schema::dropIfExists('wrap_html');
     }
 };

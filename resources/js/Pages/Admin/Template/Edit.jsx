@@ -7,9 +7,13 @@ import { Card, Divider } from 'antd';
 import * as React from 'react';
 import FormCreateEdit from './Partials/FormCreateEdit';
 import { useAdminLayoutContext } from '@/Layouts/Admin/Main';
-import AssetFile from './Partials/AssetFile/AssetFile';
+import AssetFile from './Partials/AssetFile/Index';
+import WrapBody from './Partials/WrapBody/Index';
+import OpenInvitation from './Partials/OpenInvitation/Index';
 
 function Edit(props) {
+  const [dataWrapBody, setDataWrapBody] = React.useState([]);
+
   const { _token, data } = props;
 
   const { globalState, setGlobalState, layoutSettings } =
@@ -21,7 +25,10 @@ function Edit(props) {
         activeLabel="Edit"
         paths={[
           addItemBreadcrumb(route('admin.dashboard.index'), 'Dashboard'),
-          addItemBreadcrumb(route(`admin.${props.as}index`), 'Invitation Template'),
+          addItemBreadcrumb(
+            route(`admin.${props.as}index`),
+            'Invitation Template'
+          ),
           addItemBreadcrumb(
             route(`admin.${props.as}show`, data.key),
             data.name
@@ -37,8 +44,6 @@ function Edit(props) {
     });
   };
 
-
-
   return (
     <>
       <Head title="Edit Invitation Template" />
@@ -53,7 +58,7 @@ function Edit(props) {
       </Card>
 
       <Card>
-        <KiHeadContent title='Asset Files' />
+        <KiHeadContent title="Asset Files" />
         <Divider />
         <AssetFile invitationTemplate={data} _token={_token} />
         {/* input html |
@@ -63,137 +68,138 @@ function Edit(props) {
       </Card>
 
       <Card>
-        <KiHeadContent title='Upperbody' />
+        <KiHeadContent title="Wrapper Body Template" />
+        <Divider />
+        <WrapBody
+          onChange={setDataWrapBody}
+          invitationTemplate={data}
+          _token={_token}
+        />
+      </Card>
+
+      <Card>
+        <KiHeadContent title="Open Invitation" />
+        <Divider />
+        <OpenInvitation invitationTemplate={data} _token={_token} />
+      </Card>
+
+      <Card>
+        <KiHeadContent title="First Person" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Loverbody' />
+        <KiHeadContent title="First Person Social Media Item" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Open Invitation' />
+        <KiHeadContent title="Second Person" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='First Person' />
+        <KiHeadContent title="Second Person Social Media Item" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='First Person Social Media Item' />
+        <KiHeadContent title="Save Event" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Second Person' />
+        <KiHeadContent title="Event" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Second Person Social Media Item' />
+        <KiHeadContent title="Event Item" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Save Event' />
+        <KiHeadContent title="Our Stroy" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Event' />
+        <KiHeadContent title="Our Stroy Item" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Event Item' />
+        <KiHeadContent title="Special Invitation" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Our Stroy' />
+        <KiHeadContent title="Moment" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Our Stroy Item' />
+        <KiHeadContent title="Moment Photo Item" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Special Invitation' />
+        <KiHeadContent title="Moment Video Item" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Moment' />
+        <KiHeadContent title="Live Streaming" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Moment Photo Item' />
+        <KiHeadContent title="Live Streaming Item" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Moment Video Item' />
+        <KiHeadContent title="Testimonial Best Friend" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Live Streaming' />
+        <KiHeadContent title="Testimonial Best Friend Item" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Live Streaming Item' />
+        <KiHeadContent title="Send Gift" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Testimonial Best Friend' />
+        <KiHeadContent title="Send Gift Bank Item" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Testimonial Best Friend Item' />
+        <KiHeadContent title="Send Gift Address Item" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Send Gift' />
+        <KiHeadContent title="Send Greeting" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Send Gift Bank Item' />
+        <KiHeadContent title="Health Protocol" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Send Gift Address Item' />
+        <KiHeadContent title="Health Protocol Item" />
         <Divider />
       </Card>
 
       <Card>
-        <KiHeadContent title='Send Greeting' />
-        <Divider />
-      </Card>
-
-      <Card>
-        <KiHeadContent title='Health Protocol' />
-        <Divider />
-      </Card>
-
-      <Card>
-        <KiHeadContent title='Health Protocol Item' />
-        <Divider />
-      </Card>
-
-      <Card>
-        <KiHeadContent title='Footer' />
+        <KiHeadContent title="Footer" />
         <Divider />
       </Card>
     </>

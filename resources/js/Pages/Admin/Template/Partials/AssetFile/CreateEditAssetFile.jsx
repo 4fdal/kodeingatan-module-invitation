@@ -18,7 +18,7 @@ import {
 import Dragger from 'antd/es/upload/Dragger';
 import { getFileBase64 } from '@/Utils/url';
 import { storeInvitationTemplateSetting } from '@kodeingatan/module/invitation/resources/js/Requests/TemplateSetting';
-import { AssetFileContext } from './AssetFile';
+import { AssetFileContext } from './Index';
 import { getFileScandir } from '@kodeingatan/Requests/File';
 import { getShowFileUrl } from '@kodeingatan/Utils/url';
 

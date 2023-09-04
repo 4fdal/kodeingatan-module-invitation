@@ -27,6 +27,20 @@ export function storeInvitationTemplateSetting(
     data
   );
 }
+
+export function showInvitationTemplateSetting(
+  { table, invitation_template_key, id = null },
+  data
+) {
+  let query = { table, invitation_template_key };
+  if (id) query.id = id;
+
+  return kirequest(
+    'GET',
+    route('admin.invitation.template.setting.show', query)
+  );
+}
+
 export function deleteInvitationTemplateSetting(
   { table, invitation_template_key, id },
   data
