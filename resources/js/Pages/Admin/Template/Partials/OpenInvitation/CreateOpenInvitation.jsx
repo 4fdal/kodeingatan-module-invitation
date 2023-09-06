@@ -20,6 +20,7 @@ import {
   storeInvitationTemplateSetting,
 } from '@kodeingatan/module/invitation/resources/js/Requests/TemplateSetting';
 import { textToInputObject } from '@kodeingatan/module/invitation/resources/js/Requests/Generate';
+import InputConfigGenerate from '@kodeingatan/module/invitation/resources/js/Components/Input/InputConfigGenerate';
 
 export default function CreateOpenInvitation() {
   const {
@@ -33,7 +34,6 @@ export default function CreateOpenInvitation() {
   const [errors, setErrors] = React.useState({});
   const [loading, setLoading] = React.useState(false);
   const [openInvitationId, setOpenInvitationId] = React.useState(null);
-  const [inputConfig, setInputConfig] = React.useState({});
 
   const [dataWrapTemplate, setDataWrapTemplate] = React.useState([]);
   const [wrapTemplate, setWrapTemplate] = React.useState({
@@ -62,6 +62,14 @@ export default function CreateOpenInvitation() {
     );
   };
 
+  React.useEffect(() => {
+    if (selectDataOpenInvitation?.id) {
+      const { id, html, name, input_config } = selectDataOpenInvitation;
+      setOpenInvitationId(id);
+      form.setFieldsValue({ html, name, input_config });
+    }
+  }, [selectDataOpenInvitation]);
+
   const requestCreateUpdateOpenInvitation = () => {
     const name = form.getFieldValue('name');
     const html = form.getFieldValue('html');
@@ -75,7 +83,6 @@ export default function CreateOpenInvitation() {
     if (openInvitationId) dataRequest.id = openInvitationId;
 
     setErrors({});
-
     return (async () => {
       var input_config = null;
       try {
@@ -84,7 +91,7 @@ export default function CreateOpenInvitation() {
         } = await textToInputObject({ _token, text: html });
 
         dataRequest.input_config = JSON.stringify(input_config);
-        setInputConfig(inputConfig);
+        form.setFieldValue('input_config', input_config);
       } catch (error) {}
 
       try {
@@ -113,13 +120,10 @@ export default function CreateOpenInvitation() {
     requestCreateUpdateOpenInvitation();
   };
 
-  React.useEffect(() => {
-    if (selectDataOpenInvitation?.id) {
-      const { id, html, name } = selectDataOpenInvitation;
-      setOpenInvitationId(id);
-      form.setFieldsValue({ html, name });
-    }
-  }, [selectDataOpenInvitation]);
+  const getInputConfig = () => {
+    const result = JSON.parse(form.getFieldValue('input_config') ?? '{}');
+    return result;
+  };
 
   return (
     <Form
@@ -165,6 +169,9 @@ export default function CreateOpenInvitation() {
                 value={form.getFieldValue('html')}
                 onChange={handleChangeTextEditor('html')}
               />
+            </Form.Item>
+            <Form.Item>
+              <InputConfigGenerate _token={_token} config={getInputConfig()} />
             </Form.Item>
           </Col>
           <Col md={12}>

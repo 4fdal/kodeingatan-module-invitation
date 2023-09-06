@@ -454,7 +454,29 @@ class TemplateSettingController extends Controller
 
                         $upperbody_html = $wrap_html_model->upperbody_html;
                         $lowerbody_html = $wrap_html_model->lowerbody_html;
+
+                        $input_config = json_decode($content_model->input_config, true);
                         $content_html = $content_model->html;
+
+                        $str_arr_searches = [];
+                        $str_arr_replaces = [];
+                        foreach ($input_config['input_configs'] as $index => $input) {
+                            $value = null;
+                            switch ($input['type']) {
+                                case 'params':
+                                    $value = $request->get($input['name'], $input['default_value']);
+                                    break;
+                                default:
+                                    $value = $input['value'];
+                                    break;
+                            }
+
+                            $str_arr_searches[$index] = base64_decode($input_config['input_matches'][$index]);
+                            $str_arr_replaces[$index] = $value;
+                        }
+
+                        $content_html = str_replace($str_arr_searches, $str_arr_replaces, $content_html);
+                        
                         $_html = "{$upperbody_html} {$content_html} {$lowerbody_html}";
 
                         return response($_html);
