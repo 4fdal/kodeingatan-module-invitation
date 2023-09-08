@@ -121,8 +121,15 @@ export default function CreateOpenInvitation() {
   };
 
   const getInputConfig = () => {
-    const result = JSON.parse(form.getFieldValue('input_config') ?? '{}');
-    return result;
+    const inputConfig = form.getFieldValue('input_config');
+
+    if (typeof inputConfig == 'string') {
+      return JSON.parse(inputConfig ?? '{}');
+    } else if (typeof inputConfig == 'object') {
+      return inputConfig;
+    } else {
+      return {};
+    }
   };
 
   return (
@@ -171,7 +178,16 @@ export default function CreateOpenInvitation() {
               />
             </Form.Item>
             <Form.Item>
-              <InputConfigGenerate _token={_token} config={getInputConfig()} />
+              <InputConfigGenerate
+                _token={_token}
+                config={getInputConfig()}
+                table={'open_invitation'}
+                onChange={config => {
+                  // form.setFieldValue('input_config', { ...config });
+
+                  form.setFieldValue('html', 'hello world');
+                }}
+              />
             </Form.Item>
           </Col>
           <Col md={12}>

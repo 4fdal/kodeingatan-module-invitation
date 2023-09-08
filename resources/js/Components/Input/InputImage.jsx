@@ -4,15 +4,15 @@ import {
   LoadingOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import { uploadFile } from '@kodeingatan/Requests/File';
 import { Button, Card, Col, Modal, Row } from 'antd';
 import React from 'react';
+import { uploadFileTemplateSetting } from '../../Requests/TemplateSetting';
 
 /**
  *
  *
  * @export
- * @param {{ defaultValue, name, _token }} props
+ * @param {{ defaultValue, name, _token, table, onChange = (uri) => {}} props
  * @return {*}
  */
 export default function InputImage(props) {
@@ -35,15 +35,19 @@ export default function InputImage(props) {
     elInputFile.click();
     elInputFile.onchange = e => {
       setLoading(true);
-      uploadFile({ _token, file: e.target.files[0] })
+      uploadFileTemplateSetting({
+        _token,
+        file_upload: e.target.files[0],
+        table: props.table,
+      })
         .then(res => {
           const {
             data: {
-              data: { uri_base64 },
+              data: { file_path },
             },
           } = res;
-
-          setImageUrl(uri_base64);
+          setImageUrl(file_path);
+          onChange(file_path);
         })
         .catch(res => {})
         .finally(() => setLoading(false));

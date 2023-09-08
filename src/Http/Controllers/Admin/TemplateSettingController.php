@@ -476,7 +476,7 @@ class TemplateSettingController extends Controller
                         }
 
                         $content_html = str_replace($str_arr_searches, $str_arr_replaces, $content_html);
-                        
+
                         $_html = "{$upperbody_html} {$content_html} {$lowerbody_html}";
 
                         return response($_html);
@@ -555,10 +555,18 @@ class TemplateSettingController extends Controller
 
     public function asset(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'dir_path' => ['required', 'exists:asset_html,dir_path'],
-            'file_path' => ['required']
-        ]);
+        $rules = [
+            'file_path' => ['required'],
+            'dir_path' => ['required', 'exists:asset_html,dir_path']
+        ];
+
+
+        $invitation_template_path = "admin/invitation/template";
+        if (substr($request->get('dir_path', ""), 0, strlen($invitation_template_path)) == $invitation_template_path) {
+            $rules['dir_path'] = ['required'];
+        }
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return response()->json([
@@ -574,7 +582,46 @@ class TemplateSettingController extends Controller
         }
 
         $file_path = $dir_path . "" . $request->file_path;
+        $file_path = str_replace(["../", "./"], "/", $file_path);
 
         return \Storage::response($file_path);
+    }
+
+    public function assetStore(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file_upload' => ['required', 'file'],
+            'table' => ['required', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Terjadi kesalahan penginputan data',
+                'data' => null,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $default_dir_path = "admin/invitation/template";
+        $table = str_replace(["../", './'], '', $request->table) . "_html";
+
+        // simpan file ke storage 
+        $dir_path = $default_dir_path . "/{$table}";
+        $file_path = $request->file('file_upload')->store($dir_path);
+
+        // dir1/dir2/filename.ext
+        // tampilkan file path
+        $dir_path = substr($file_path, 0, strrpos($file_path, "/")); // output : dir1/dir2
+        $file_path = route('admin.invitation.asset', [
+            'dir_path' =>  $dir_path,
+            'file_path' => substr($file_path, strlen($dir_path)), //  output : /filename.ext
+        ]); // output : https://host/admin/invitation/template/asset?dir_path=dir1/dir2&file_path=/filename.ext
+        $file_path = substr($file_path, (strpos($file_path, $default_dir_path) ?? 1) - 1); // output : /admin/invitation/template/asset?dir_path=dir1/dir2&file_path=/filename.ext
+
+        return response()->json([
+            'message' => 'success',
+            'data' => compact('file_path'),
+            'error' => null,
+        ]);
     }
 }

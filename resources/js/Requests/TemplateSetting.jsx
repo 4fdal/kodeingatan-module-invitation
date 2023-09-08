@@ -52,3 +52,21 @@ export function deleteInvitationTemplateSetting(
     data
   );
 }
+
+/**
+ *
+ *
+ * @export
+ * @param {{ _token, table, file_upload }} params
+ * @return {Promise<Response>}
+ */
+export function uploadFileTemplateSetting({ _token, table, file_upload }) {
+  const formData = new FormData();
+  formData.append('_token', _token);
+  formData.append('table', table);
+  formData.append('file_upload', file_upload, file_upload.name);
+
+  return kirequest('POST', route('admin.invitation.asset.store'), formData, {
+    'Content-Type': 'multipart/form-data',
+  });
+}

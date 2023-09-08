@@ -15,6 +15,7 @@ Route::middleware('web', 'auth', 'permission:admin')->prefix('/admin')->as('admi
         });
 
         Route::get('/template/asset', [TemplateSettingController::class, 'asset'])->name('asset');
+        Route::post('/template/asset', [TemplateSettingController::class, 'assetStore'])->name('asset.store');
         Route::prefix('/template/settings/{invitation_template_key}/{table}')->as('template.setting.')->group(function () {
             Route::get('/', [TemplateSettingController::class, 'index'])->name('index');
             Route::get('/show', [TemplateSettingController::class, 'show'])->name('show');
