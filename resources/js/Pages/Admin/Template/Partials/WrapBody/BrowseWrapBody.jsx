@@ -8,7 +8,7 @@ import KiDataTable from '@kodeingatan/Components/Table/KiDataTable';
 import { Button, Modal, notification } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
-export default function BrowseUpperbody({ onChange }) {
+export default function BrowseUpperbody({ setDataWrapTemplate }) {
   const { loadDataWrapBody, invitationTemplate, setWrapBodyState, _token } =
     React.useContext(WrapBodyCtx);
   const [dataBrowse, setDataBrowse] = React.useState([]);
@@ -22,7 +22,7 @@ export default function BrowseUpperbody({ onChange }) {
     })
       .then(({ data: { data } }) => {
         setDataBrowse(data);
-        onChange(data);
+        setDataWrapTemplate(data);
       })
       .finally(() => setWrapBodyState({ loadDataWrapBody: false }));
     // }

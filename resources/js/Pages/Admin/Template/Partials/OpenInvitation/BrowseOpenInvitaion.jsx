@@ -1,38 +1,15 @@
 import React from 'react';
-import { OpenInvitationCtx } from './Index';
-import {
-  browseInvitationTemplateSetting,
-  deleteInvitationTemplateSetting,
-} from '@kodeingatan/module/invitation/resources/js/Requests/TemplateSetting';
 import KiDataTable from '@kodeingatan/Components/Table/KiDataTable';
-import { Button, Modal, notification } from 'antd';
+import { Button, Modal } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
-export default function BrowseOpenInvitaion() {
-  const {
-    loadDataOpenInvitation,
-    invitationTemplate,
-    setOpenInvitationState,
-    dataWrapBody,
-    _token,
-  } = React.useContext(OpenInvitationCtx);
-  const [dataBrowse, setDataBrowse] = React.useState([]);
+export default function BrowseOpenInvitaion({
+  browseDataOpenInvitation = [],
+  loadBrowseDataOpenInvitation = false,
+  onEdit = row => {},
+  onDelete = row => {},
+}) {
   const [deleteLoading, setDeleteLoading] = React.useState(false);
-
-  console.log(dataWrapBody);
-
-  React.useEffect(() => {
-    // if (loadDataOpenInvitation) {
-    browseInvitationTemplateSetting({
-      table: 'open_invitation',
-      invitation_template_key: invitationTemplate.key,
-    })
-      .then(({ data: { data } }) => {
-        setDataBrowse(data);
-      })
-      .finally(() => setOpenInvitationState({ loadDataOpenInvitation: false }));
-    // }
-  }, [loadDataOpenInvitation]);
 
   const handleDelete = row => {
     Modal.confirm({
@@ -43,38 +20,18 @@ export default function BrowseOpenInvitaion() {
       okButtonProps: {
         loading: deleteLoading,
       },
-      onOk: () => {
+      onOk: async () => {
         setDeleteLoading(true);
-        deleteInvitationTemplateSetting(
-          {
-            table: 'open_invitation',
-            invitation_template_key: invitationTemplate.key,
-            id: row.id,
-          },
-          {
-            _token,
-          }
-        )
-          .then(result => {
-            const {
-              data: { message },
-            } = result;
-            notification.open({
-              type: 'success',
-              message,
-            });
-          })
-          .finally(() => {
-            setOpenInvitationState({ loadDataOpenInvitation: true });
-            setDeleteLoading(false);
-          });
+        await onDelete(row);
+        setDeleteLoading(false);
       },
     });
   };
 
   return (
     <KiDataTable
-      data={dataBrowse}
+      data={browseDataOpenInvitation}
+      loading={loadBrowseDataOpenInvitation}
       columns={[
         {
           key: 'name',
@@ -92,13 +49,7 @@ export default function BrowseOpenInvitaion() {
             return (
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <Button
-                  onClick={() => {
-                    setOpenInvitationState({
-                      selectDataOpenInvitation: row,
-                      showCreateUpdate: true,
-                      showCreateUpdateTitle: 'Edit kerangka template undangan',
-                    });
-                  }}
+                  onClick={() => onEdit(row)}
                   style={{ marginRight: 5 }}
                   size="small"
                   icon={<EditOutlined />}

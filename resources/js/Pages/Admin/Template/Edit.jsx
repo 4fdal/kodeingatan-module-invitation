@@ -12,7 +12,7 @@ import WrapBody from './Partials/WrapBody/Index';
 import OpenInvitation from './Partials/OpenInvitation/Index';
 
 function Edit(props) {
-  const [dataWrapBody, setDataWrapBody] = React.useState([]);
+  const [dataWrapTemplate, setDataWrapTemplate] = React.useState([]);
 
   const { _token, data } = props;
 
@@ -71,7 +71,7 @@ function Edit(props) {
         <KiHeadContent title="Wrapper Body Template" />
         <Divider />
         <WrapBody
-          onChange={setDataWrapBody}
+          setDataWrapTemplate={setDataWrapTemplate}
           invitationTemplate={data}
           _token={_token}
         />
@@ -80,7 +80,11 @@ function Edit(props) {
       <Card>
         <KiHeadContent title="Open Invitation" />
         <Divider />
-        <OpenInvitation invitationTemplate={data} _token={_token} />
+        <OpenInvitation
+          dataWrapTemplate={dataWrapTemplate}
+          invitationTemplate={data}
+          _token={_token}
+        />
       </Card>
 
       <Card>

@@ -47,7 +47,7 @@ export default function InputImage(props) {
             },
           } = res;
           setImageUrl(file_path);
-          onChange(file_path);
+          props.onChange(file_path);
         })
         .catch(res => {})
         .finally(() => setLoading(false));

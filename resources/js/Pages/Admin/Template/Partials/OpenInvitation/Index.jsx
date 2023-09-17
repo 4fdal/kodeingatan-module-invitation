@@ -3,83 +3,129 @@ import React from 'react';
 import BrowseOpenInvitation from './BrowseOpenInvitaion';
 import { PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import CreateEditOpenInvitation from './CreateOpenInvitation';
-import { browseInvitationTemplateSetting } from '@kodeingatan/module/invitation/resources/js/Requests/TemplateSetting';
-
-const defaultOpenInvitationCtx = {
-  _token: null,
-  invitationTemplate: {
-    id: null,
-    key: null,
-    slug: null,
-    name: null,
-  },
-  loadOpenInvitation: true,
-
-  dataWrapBody: [],
-
-  setOpenInvitationState: state => {},
-
-  selectOpenInvitation: {
-    id: null,
-    name: null,
-    html: null,
-  },
-
-  showCreateUpdate: true,
-  showCreateUpdateTitle: '',
-};
-export const OpenInvitationCtx = React.createContext(defaultOpenInvitationCtx);
-export const getOpenInvitationState = ({
-  invitationTemplate,
-  _token,
-  dataWrapBody,
-}) => {
-  const [assetFileState, setOpenInvitationState] = React.useState({
-    ...defaultOpenInvitationCtx,
-    invitationTemplate,
-    _token,
-  });
-  return {
-    ...assetFileState,
-    setOpenInvitationState: state =>
-      setOpenInvitationState({ ...assetFileState, ...state }),
-  };
-};
+import {
+  browseInvitationTemplateSetting,
+  deleteInvitationTemplateSetting,
+  storeInvitationTemplateSetting,
+} from '@kodeingatan/module/invitation/resources/js/Requests/TemplateSetting';
 
 export default function OpenInvitation({
   invitationTemplate,
   _token,
-  dataWrapBody = [],
+  dataWrapTemplate = [],
 }) {
-  const wrapBodyState = getOpenInvitationState({
-    invitationTemplate,
-    _token,
-    dataWrapBody,
+  // initial variables
+  const [selectOpenInvitation, setSelectOpenInvitation] = React.useState({
+    id: null,
+    name: null,
+    html: null,
   });
-  const { showCreateUpdate, setOpenInvitationState, showCreateUpdateTitle } =
-    wrapBodyState;
+  const [modalCreateUpdateOption, setModalCreateUpdateOption] = React.useState({
+    show: false,
+    title: 'Tambahkan variasi template buka undangan',
+  });
+  // end initial variables
+
+  // browse data open invitation
+  const [browseDataOpenInvitation, setDataBrowseOpenInvitation] =
+    React.useState([]);
+  const [loadBrowseDataOpenInvitation, setLoadDataBrowseOpenInvitation] =
+    React.useState(false);
+  const handleRequestBrowseDataOpenInvitation = () => {
+    setLoadDataBrowseOpenInvitation(true);
+    browseInvitationTemplateSetting({
+      table: 'open_invitation',
+      invitation_template_key: invitationTemplate.key,
+    })
+      .then(({ data: { data } }) => setDataBrowseOpenInvitation(data))
+      .finally(() => setLoadDataBrowseOpenInvitation(false));
+  };
+  React.useEffect(() => {
+    handleRequestBrowseDataOpenInvitation();
+  }, []);
+  // end browse data
+
+  // handle all event
+  // create
+  const handleCreateOpenInvitation = () => {
+    setModalCreateUpdateOption({
+      title: 'Tambahkan varian baru template open invitation',
+      show: true,
+    });
+  };
+  const handleCreateUpdateOpenInvitationSubmit = (
+    values,
+    setErrors,
+    setShowModal
+  ) => {
+    let urlParams = {
+      table: 'open_invitation',
+      invitation_template_key: invitationTemplate.key,
+    };
+
+    if (selectOpenInvitation.id) urlParams.id = selectOpenInvitation.id;
+
+    storeInvitationTemplateSetting(urlParams, {
+      _token,
+      ...values,
+    })
+      .then(response => {
+        console.log(response.status);
+        setShowModal(false);
+      })
+      .catch(response => {
+        if (response.status == 422) {
+          setErrors(response.data.errors);
+        }
+      });
+  };
+  // end create
+
+  // delete
+  const handleDeleteOpenInvitation = openInvitation => {
+    deleteInvitationTemplateSetting(
+      {
+        table: 'open_invitation',
+        invitation_template_key: invitationTemplate.key,
+        id: openInvitation.id,
+      },
+      {
+        _token,
+      }
+    ).then(result => {
+      const {
+        data: { message },
+      } = result;
+      notification.open({
+        type: 'success',
+        message,
+      });
+    });
+  };
+  // end delete
+
+  // update
+  const handleEditOpenInvitation = openInvitation => {};
+  // end update
+  // end all event
 
   return (
-    <OpenInvitationCtx.Provider value={wrapBodyState}>
-      <Modal
-        width={'100%'}
-        title={showCreateUpdateTitle}
-        open={showCreateUpdate}
-        okButtonProps={{ hidden: true }}
-        onCancel={() => setOpenInvitationState({ showCreateUpdate: false })}
-      >
-        <CreateEditOpenInvitation />
-      </Modal>
+    <React.Fragment>
+      <CreateEditOpenInvitation
+        dataWrapTemplate={dataWrapTemplate}
+        openInvitation={selectOpenInvitation}
+        modalTitle={modalCreateUpdateOption.title}
+        setShowModal={show =>
+          setModalCreateUpdateOption({ ...modalCreateUpdateOption, show })
+        }
+        onSubmit={handleCreateUpdateOpenInvitationSubmit}
+        showModal={modalCreateUpdateOption.show}
+      />
 
       <Row>
         <Button
           type="dashed"
-          onClick={() =>
-            setOpenInvitationState({
-              showCreateUpdate: true,
-              showCreateUpdateTitle: 'Buat kerangka baru template undangan',
-            })
-          }
+          onClick={handleCreateOpenInvitation}
           icon={<PlusCircleOutlined />}
         >
           Tambah
@@ -87,9 +133,14 @@ export default function OpenInvitation({
       </Row>
       <Row style={{ marginTop: 10 }}>
         <Col md={24}>
-          <BrowseOpenInvitation />
+          <BrowseOpenInvitation
+            browseDataOpenInvitation={browseDataOpenInvitation}
+            loadBrowseDataOpenInvitation={loadBrowseDataOpenInvitation}
+            onDelete={handleDeleteOpenInvitation}
+            onEdit={handleEditOpenInvitation}
+          />
         </Col>
       </Row>
-    </OpenInvitationCtx.Provider>
+    </React.Fragment>
   );
 }

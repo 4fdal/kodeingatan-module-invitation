@@ -48,7 +48,11 @@ export const getWrapBodyState = ({ invitationTemplate, _token }) => {
   };
 };
 
-export default function WrapBody({ invitationTemplate, _token, onChange }) {
+export default function WrapBody({
+  invitationTemplate,
+  _token,
+  setDataWrapTemplate,
+}) {
   const wrapBodyState = getWrapBodyState({ invitationTemplate, _token });
   const {
     showCreateUpdate,
@@ -56,12 +60,6 @@ export default function WrapBody({ invitationTemplate, _token, onChange }) {
     showCreateUpdateTitle,
     dataWrapBody,
   } = wrapBodyState;
-
-  React.useEffect(() => {
-    console.log(dataWrapBody);
-
-    onChange(dataWrapBody);
-  }, [dataWrapBody]);
 
   return (
     <WrapBodyCtx.Provider value={wrapBodyState}>
@@ -91,7 +89,7 @@ export default function WrapBody({ invitationTemplate, _token, onChange }) {
       </Row>
       <Row style={{ marginTop: 10 }}>
         <Col md={24}>
-          <BrowseWrapBody onChange={onChange} />
+          <BrowseWrapBody setDataWrapTemplate={setDataWrapTemplate} />
         </Col>
       </Row>
     </WrapBodyCtx.Provider>
