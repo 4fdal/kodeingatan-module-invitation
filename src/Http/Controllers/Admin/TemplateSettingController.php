@@ -40,7 +40,7 @@ class TemplateSettingController extends Controller
                     $setting_model = $setting_model->first();
                 } else {
                     // jika tidak ditemukan id ambil semua data
-                    $setting_model = $setting_model->get();
+                    $setting_model = $setting_model->orderBy('created_at', 'desc')->get();
                 }
 
                 // berikan respon sesuai dengan table yang di minta, respon data berisikan data setting template sesuai dengan kondisi sebelumnya
