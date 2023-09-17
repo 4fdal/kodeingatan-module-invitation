@@ -1,4 +1,4 @@
-import { Button, Col, Modal, Row } from 'antd';
+import { Button, Col, Modal, Row, notification } from 'antd';
 import React from 'react';
 import BrowseOpenInvitation from './BrowseOpenInvitaion';
 import { PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
@@ -48,6 +48,11 @@ export default function OpenInvitation({
   // handle all event
   // create
   const handleCreateOpenInvitation = () => {
+    setSelectOpenInvitation({
+      html: null,
+      id: null,
+      name: null,
+    });
     setModalCreateUpdateOption({
       title: 'Tambahkan varian baru template open invitation',
       show: true,
@@ -69,13 +74,23 @@ export default function OpenInvitation({
       _token,
       ...values,
     })
-      .then(response => {
-        console.log(response.status);
+      .then(res => {
+        const {
+          data: { message },
+        } = res;
+
+        notification.open({
+          type: 'success',
+          message,
+        });
+
+        handleRequestBrowseDataOpenInvitation();
+
         setShowModal(false);
       })
-      .catch(response => {
-        if (response.status == 422) {
-          setErrors(response.data.errors);
+      .catch(res => {
+        if (res.status == 422) {
+          setErrors(res.data.errors);
         }
       });
   };
@@ -96,16 +111,25 @@ export default function OpenInvitation({
       const {
         data: { message },
       } = result;
+
       notification.open({
         type: 'success',
         message,
       });
+
+      handleRequestBrowseDataOpenInvitation();
     });
   };
   // end delete
 
   // update
-  const handleEditOpenInvitation = openInvitation => {};
+  const handleEditOpenInvitation = openInvitation => {
+    setSelectOpenInvitation(openInvitation);
+    setModalCreateUpdateOption({
+      title: `Edit varian template '${openInvitation.name}'`,
+      show: true,
+    });
+  };
   // end update
   // end all event
 
@@ -120,6 +144,7 @@ export default function OpenInvitation({
         }
         onSubmit={handleCreateUpdateOpenInvitationSubmit}
         showModal={modalCreateUpdateOption.show}
+        setOpenInvitation={setSelectOpenInvitation}
       />
 
       <Row>

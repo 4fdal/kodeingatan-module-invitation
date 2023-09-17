@@ -341,6 +341,7 @@ class TemplateSettingController extends Controller
 
                         if ($has_update) {
                             $setting_model->updated_at = date('Y-m-d H:i:s');
+                            $setting_model->name = $request->name;
                             $setting_model->html = $request->html;
                             $setting_model->input_config = $input_config;
                             $setting_builder->update((array) $setting_model);

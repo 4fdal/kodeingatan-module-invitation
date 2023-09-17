@@ -7,6 +7,7 @@ import { useAdminLayoutContext } from '@kodeingatan/Layouts/Admin/Main';
 export default function CreateOpenInvitation({
   dataWrapTemplate,
   openInvitation,
+  setOpenInvitation,
   modalTitle = '',
   showModal = false,
   setShowModal = showModal => {},
@@ -23,8 +24,16 @@ export default function CreateOpenInvitation({
   }, [openInvitation]);
 
   const handleChangeHTMLTemplateFormEditor = (html, generateInputOption) => {
+    // open invitation change
+    let newOpenInvitation = openInvitation;
+    newOpenInvitation.html = html;
+    setOpenInvitation({ ...newOpenInvitation });
+    // end invitation change
+
+    // form change
     form.setFieldValue('html', html);
     form.setFieldValue('input_config', JSON.stringify(generateInputOption));
+    // end form change
   };
 
   const handleUploadImageTemplateFormEditor = (e, setImageUrl, setLoading) => {
@@ -74,7 +83,15 @@ export default function CreateOpenInvitation({
               label="Nama"
               name="name"
             >
-              <Input placeholder="Nama" />
+              <Input
+                placeholder="Nama"
+                onChange={({ target }) => {
+                  form.setFieldValue(
+                    'name',
+                    target.value.replace(/ /g, '-').toLowerCase()
+                  );
+                }}
+              />
             </Form.Item>
             <Form.Item style={{ display: 'none' }} name="input_config">
               <input type="hidden" />

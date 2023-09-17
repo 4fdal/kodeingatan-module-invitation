@@ -19,19 +19,6 @@ export default function CodeEditor({
   const [cursor, setCursor] = React.useState(null);
   const [showModalAddInput, setShowModalAddInput] = React.useState(false);
 
-  const appendTextInCursor = newText => {
-    const { $autoNewLine, $lines } = cursor.document;
-    const { row, column } = cursor;
-
-    let lineCode = $lines[row];
-    let strBeforeColumn = lineCode.substring(0, column);
-    let strAfterColumn = lineCode.substring(column, lineCode.length);
-
-    $lines[row] = `${strBeforeColumn}${newText}${strAfterColumn}`;
-
-    onChange($lines.join($autoNewLine));
-  };
-
   React.useEffect(() => {
     onChange(value);
   }, [value]);
@@ -71,6 +58,26 @@ export default function CodeEditor({
 
   const handleCursorChange = ({ cursor }) => {
     setCursor(cursor);
+  };
+
+  const handleFormGenerateInputSubmit = (valueText, formResetInput) => {
+    if (cursor) {
+      const { $autoNewLine, $lines } = cursor.document;
+      const { row, column } = cursor;
+      let lineCode = $lines[row];
+      let strBeforeColumn = lineCode.substring(0, column);
+      let strAfterColumn = lineCode.substring(column, lineCode.length);
+
+      valueText = `{${JSON.stringify(valueText)}}`;
+      $lines[row] = `${strBeforeColumn}${valueText}${strAfterColumn}`;
+
+      const codeText = $lines.join($autoNewLine);
+
+      onChange(`${codeText} `);
+
+      setShowModalAddInput(false);
+      formResetInput();
+    }
   };
 
   return (
@@ -116,15 +123,7 @@ export default function CodeEditor({
         cancelButtonProps={{ style: { display: 'none' } }}
         onCancel={() => setShowModalAddInput(false)}
       >
-        <FormGenerateInput
-          onSubmit={(value, formResetInput) => {
-            console.log(value);
-
-            appendTextInCursor(`{${JSON.stringify(value)}}`);
-            // setShowModalAddInput(false);
-            // formResetInput();
-          }}
-        />
+        <FormGenerateInput onSubmit={handleFormGenerateInputSubmit} />
       </Modal>
       <AceEditor
         style={{

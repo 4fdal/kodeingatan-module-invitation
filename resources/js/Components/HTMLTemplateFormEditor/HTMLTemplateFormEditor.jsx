@@ -14,7 +14,6 @@ export default function HTMLTemplateFormEditor({
   validateStatus = 'success',
   help = '',
 }) {
-  const [textHTML, setTextHTML] = React.useState(html);
   const [generateInputOption, setGenerateInputOption] = React.useState(
     GenerateInputOption.formText(html)
   );
@@ -23,15 +22,9 @@ export default function HTMLTemplateFormEditor({
     right: 14,
   });
 
-  React.useEffect(() => {
-    const generateInputOption = GenerateInputOption.formText(textHTML);
-    setGenerateInputOption(generateInputOption);
-    onChange(textHTML, generateInputOption);
-  }, [textHTML]);
-
   const handleGenerateInputsChange = generateInputs => {
     let editGenerateInputOption = generateInputOption;
-    let editTextHTML = textHTML;
+    let editTextHTML = html;
 
     for (const index in generateInputs) {
       const newKeyGenerateInput = `{${JSON.stringify(generateInputs[index])}}`;
@@ -42,11 +35,18 @@ export default function HTMLTemplateFormEditor({
       );
     }
 
-    setTextHTML(editTextHTML);
+    handleTextCodeChange(editTextHTML);
+  };
+
+  const handleTextCodeChange = valueText => {
+    const generateInputOption = GenerateInputOption.formText(valueText);
+
+    setGenerateInputOption(generateInputOption);
+    onChange(valueText, generateInputOption);
   };
 
   const getRenderTextHTML = () => {
-    let renderTextHTML = textHTML;
+    let renderTextHTML = (html ?? '').toString();
     const generateInputs = generateInputOption.generateInputs;
 
     for (const index in generateInputs) {
@@ -76,8 +76,8 @@ export default function HTMLTemplateFormEditor({
                     setMdSize({ left, right });
                   }
                 }}
-                value={textHTML}
-                onChange={textHTML => setTextHTML(textHTML)}
+                value={html}
+                onChange={handleTextCodeChange}
               />
             </Col>
             <Col md={24}>
